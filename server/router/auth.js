@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const express = require("express");
 const router = express.Router();
 const bcyrpt = require("bcryptjs");
@@ -77,6 +78,17 @@ try{
     //console.log(userLogin)
         if(userLogin) {
           const isMatch = await bcyrpt.compare(password, userLogin.password);
+
+          //Calling generated token from userSchema
+          const token = await userLogin.generateAuthToken();
+          //console.log(token);
+
+          // storing token in cookies
+          res.cookie('jwtoken', token,
+          { expires: new Date(Date.now() + 25892000000),
+            httpOnly:true
+          });
+
           if(!isMatch){
             res.status(400).json({Error:"Invalid Credentials..!!"})
           }
@@ -85,7 +97,7 @@ try{
           }     
         }
         else{
-          res.status(400).json({Error:"Email Not found, Register first..!!"})
+          res.status(400).json({Error:"Invalid Credentials..!!"})
         }
 
     }
