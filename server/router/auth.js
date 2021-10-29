@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const bcyrpt = require("bcryptjs");
 
 require("../db/conn");
 const User = require("../models/userSchema");
@@ -73,12 +74,18 @@ try{
       }
    
     const userLogin = await User.findOne({email:email});
-    console.log(userLogin)
-        if(!userLogin) {
-          res.status(400).json({Error:"Email Not found, Register first..!!"})
+    //console.log(userLogin)
+        if(userLogin) {
+          const isMatch = await bcyrpt.compare(password, userLogin.password);
+          if(!isMatch){
+            res.status(400).json({Error:"Invalid Credentials..!!"})
+          }
+          else{
+            res.status(200).json({message: "User Signin scucessfull..!!"})
+          }     
         }
         else{
-          res.status(200).json({message: "User Signin scucessfull..!!"})
+          res.status(400).json({Error:"Email Not found, Register first..!!"})
         }
 
     }
