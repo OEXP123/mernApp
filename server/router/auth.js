@@ -5,7 +5,7 @@ require("../db/conn");
 const User = require("../models/userSchema");
 
 router.get("/", (req, res) => {
-  res.send("Hello World!!2");
+  res.send("Hello World!! shruti");
 });
 
 // Promises
